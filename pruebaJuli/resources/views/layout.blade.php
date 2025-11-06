@@ -8,6 +8,29 @@
   </head>
   <body>
     <h1 class="bg-primary text-white text-center">Bienvenido</h1>
+    <div>
+        @if (session('status'))
+    <div class="alert alert-success text-center mt-3" role="alert">
+        {{ session('status') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger text-center mt-3" role="alert">
+        {{ session('error') }}
+    </div>
+@endif
+        @guest
+            <a href="{{ route('login') }}" class="btn btn-primary-light">Iniciar sesión</a>
+        @endguest
+
+        @auth
+            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-light">Cerrar sesión</button>
+            </form>
+        @endauth
+    </div>
     <div class="container">
         @yield('contenido')
     </div>

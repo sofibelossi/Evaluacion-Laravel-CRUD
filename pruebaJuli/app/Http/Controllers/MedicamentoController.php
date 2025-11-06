@@ -12,10 +12,19 @@ class MedicamentoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-         $medicamentos=Medicamento::all();
-        return view('medicamento.medicamentos')->with('medicamentos',$medicamentos);
+     $sortField = $request->input('sort', 'id');
+    $sortDirection = $request->input('direction', 'asc');
+
+    $medicamentos = Medicamento::orderBy($sortField, $sortDirection)->get();
+
+    return view('medicamento.medicamentos', [
+        'medicamentos' => $medicamentos,
+        'sortField' => $sortField,
+        'sortDirection' => $sortDirection,
+        'buscar' => '',
+    ]);
     }
 
     /**
@@ -25,7 +34,7 @@ class MedicamentoController extends Controller
      */
     public function create()
     {
-         return view('medicamento.create');
+         return view('medicamento.form', ['medicamento' => new Medicamento()]);
     }
 
     /**
@@ -57,7 +66,7 @@ class MedicamentoController extends Controller
         $medicamentos->imagen = $nombre;
     }
         $medicamentos->save();//se usa eloquent
-        return redirect('/medicamentos');
+        return redirect('/medicamentos')->with('status', 'Medicamento agregado con éxito');
     }
 
     /**
@@ -68,7 +77,7 @@ class MedicamentoController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**
@@ -80,7 +89,7 @@ class MedicamentoController extends Controller
     public function edit($id)
     {
           $medicamento=Medicamento::find($id);
-        return view('medicamento.edit')->with('medicamento',$medicamento);
+        return view('medicamento.form')->with('medicamento',$medicamento);
     }
 
     /**
@@ -112,7 +121,7 @@ class MedicamentoController extends Controller
         $medicamento->imagen = $nombre;
     }     
         $medicamento->save();//se usa eloquent
-        return redirect('/medicamentos');
+        return redirect('/medicamentos')->with('status', 'Medicamento modificado con éxito');
     }
 
     /**
@@ -125,6 +134,36 @@ class MedicamentoController extends Controller
     {
         $medicamento = Medicamento::find($id);
        $medicamento->delete();//se usa eloquent
-       return redirect('/medicamentos');
+       return redirect('/medicamentos')->with('status', 'Medicamento eliminado con éxito');
     }
+    public function buscar(Request $request)
+{
+    
+    $query = $request->input('buscar');
+    $sortField = $request->input('sort', 'id'); 
+    $sortDirection = $request->input('direction', 'asc'); 
+
+ 
+    $medicamentos = Medicamento::query();
+
+    // filtra por marca laboratorio
+    if (!empty($query)) {
+        $medicamentos->where(function($q) use ($query) {
+            $q->where('marca', 'LIKE', "%{$query}%")
+              ->orWhere('laboratorio', 'LIKE', "%{$query}%");
+        });
+    }
+
+    //ordenamiento
+    $medicamentos = $medicamentos->orderBy($sortField, $sortDirection)->get();
+
+    
+    return view('medicamento.medicamentos', [
+        'medicamentos' => $medicamentos,
+        'sortField' => $sortField,
+        'sortDirection' => $sortDirection,
+        'buscar' => $query,
+    ]);
+}
+
 }

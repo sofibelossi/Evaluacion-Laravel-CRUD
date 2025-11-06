@@ -24,10 +24,10 @@ class CreateMedicamento extends FormRequest
     public function rules()
     {
         return [
-            'nombre'=>'required|string|max:255',
-            'marca'=>'required|string|max:255',
-            'laboratorio'=>'required|string|max:255',
-            'dosis'=>'required|string|max:255',
+            'nombre'=>'required|string|max:100',
+            'marca'=>'required|string|max:100',
+            'laboratorio'=>'required|string|max:100',
+            'dosis'=>'required|string|max:100',
             'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ];
     }
@@ -40,8 +40,6 @@ class CreateMedicamento extends FormRequest
             'laboratorio.required' => 'El laboratorio es obligatorio.',
             'laboratorio.alpha' => 'El laboratorio solo debe contener letras.',
             'dosis.required' => 'La dosis es obligatorio.',
-            'mensaje.min' => 'El mensaje debe tener al menos 10 caracteres.',
-            'mensaje.max' => 'El mensaje no puede exceder los 200 caracteres.'
         ];
     }
 }
