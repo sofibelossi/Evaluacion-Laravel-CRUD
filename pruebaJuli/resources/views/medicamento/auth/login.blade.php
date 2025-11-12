@@ -5,11 +5,7 @@
 <div style="width:400px;heigth:200;border: solid 1px;border-radius:10px;padding:15px;">
 <form action="{{route ('login')}}" method="post">
 @csrf
-<label class="form-label">Nombre</label>
-<input type="text" name="name" value="{{ old('name') }}" class="form-control">
- @error('name')
-                <small class="font-bold text-danger">{{ $message }}</small>
- @enderror
+
  <label class="form-label">Email</label>
 <input type="email" name="email" value="{{ old('email') }}" class="form-control">
  @error('email')
